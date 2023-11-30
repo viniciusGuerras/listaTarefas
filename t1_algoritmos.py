@@ -14,8 +14,14 @@ class Tarefa:
     """
     #PRINTAR TAMBEM O STATUS
     def __str__(self):
-        pass
-    
+        return (
+            '\nIdentificador da tarefa: ' +str(self.id)+ 
+            '\nTítulo da tarefa: ' +str(self.title)+ 
+            '\nDescrição: ' +str(self.desc)+ 
+            '\nTempo: ' +str(self.time)+ 'horas'
+            '\nSituação: '
+        )
+
     def tarefaConcluida(self):
         self.status = False
         self.time = 0
@@ -25,6 +31,13 @@ class Tarefa:
 
     def getStatus(self):
         return self.status
+
+    def prioridade(listaDeTarefas):
+        listaAtivas = []
+        for tarefa in listaDeTarefas:
+            if getStatus():
+               listaAtivas.append(tarefa)
+        listaOrdenadaTempo = sorted(listaAtivas, key=lambda tarefa: tarefa.time)
     
 #funcao pra fazer linha separatória bonitinha
 def linhaDivisoria():
@@ -37,6 +50,13 @@ def aListaTaVazia(listaDeTarefas):
         return False
     return True
 
+#Função para verificar se o input fornecido é um inteiro ou não
+def inteiro(inputUser):
+    try:
+        intValue = int(inputUser)
+        return True
+    except ValueError:
+        return False
 
 #colorizacao do texto pq sim
 def tituloMensagem(mensagem):
@@ -51,6 +71,10 @@ def avisoMensagem(mensagem):
 def sucessoMensagem(mensagem):
     print(f"\033[92m{mensagem}\033[0m ")
 
+
+
+
+
 #mudança no localizaIndentificador: agora ele retorna a posiçao do identificador na lista
 def localizaIndentificador(listaDeTarefas, id):
     for posicao in range(len(listaDeTarefas)):
@@ -64,7 +88,12 @@ def adiciona_tarefa(listaDeTarefas):
     
     tituloMensagem("*****Nova-Tarefa*****")
     #FAZER checar se o indetificador que vai ser criado é um inteiro (se for string mostrar erro)
+    #FEITO. Criei uma função para conferir
     id = input("Digite o identificador da tarefa: ")
+    while inteiro(id) == False:
+        print("O identificador precisa ser um número inteiro.")
+        id = input("Digite um novo identificador: ")
+    
     while localizaIndentificador(listaDeTarefas,id) != None:
         erroMensagem("Uma tarefa com o mesmo identificador foi localizada.")
         id = input("Digite um novo identificador para a tarefa: ")
@@ -73,7 +102,11 @@ def adiciona_tarefa(listaDeTarefas):
     title = input("Digite o título da tarefa: ")
     desc = input("Digite a descrição da tarefa: ")
     #FAZER mesma checagem para o tempo
+    #feito usando a mesma função para checagem do id
     time = input("Digite o tempo limite da tarefa: ")
+    while inteiro(time) == False:
+        print("O tempo precisa ser um valor numérico.")
+        time - input("Digite o tempo limite da tarefa: ")
 
     tarefa = Tarefa(id, title, desc, time)
     listaDeTarefas.append(tarefa)
@@ -106,6 +139,9 @@ def visualiza_tarefas(listaDeTarefas):
 
     """FAZER - usar a funcao alistatavazia pra checar se tem algo dentro, caso estiver vazia
     printar algo para o usuario""" 
+    #Feito
+    if aListaTaVazia == True:
+        print("Não há tarefas adicionadas.")
     
 
     for task in listaDeTarefas:
@@ -136,19 +172,23 @@ def atualiza_tarefas(listaDeTarefas):
 
         #pergunta qual e atualiza a informacao
         print("\nQual item deseja atualizar? ")
+        print("\t0 - Título")
         print("\t1 - Descrição")
         print("\t2 - Tempo")
+        #Acrescentei o título aqui
 
         input_usuario = input()
 
-        while input_usuario != "1" and input_usuario != "2":
+        while input_usuario < "0" and input_usuario > "2":
             erroMensagem("Opção inválida")
             input_usuario = input()
-            
-        if input_usuario == "1":     
-                    listaDeTarefas[posicao_id].desc = input("digite a nova descrição: ")
+        
+        if input_usuario == "O":
+                    listaDeTarefas[posicao_id].title = input("Digite o novo título: ")
+        elif input_usuario == "1":     
+                    listaDeTarefas[posicao_id].desc = input("Digite a nova descrição: ")
         elif input_usuario == "2":        
-                    listaDeTarefas[posicao_id].time = input("digite o novo tempo: ")
+                    listaDeTarefas[posicao_id].time = input("Digite o novo tempo: ")
         sucessoMensagem("Tarefa atualizada!")
     #caso ela nao existir
     else:
@@ -162,10 +202,10 @@ def conclui_tarefas(listaDeTarefas):
     #acha a posicao do identificador na lista
     posicao_id =  localizaIndentificador(listaDeTarefas, identificador)
     #mensagem de aviso para caso queira prosseguir
-    avisoMensagem(f"a tarefa {listaDeTarefas[posicao_id].getTitle()} será concluida!")
-    print("continuar?")
-    print("\t1 - sim")
-    print("\t2 - não")
+    avisoMensagem(f"A tarefa {listaDeTarefas[posicao_id].getTitle()} será concluida!")
+    print("Continuar?")
+    print("\t1 - Sim")
+    print("\t2 - Não")
     opcao = input("")
 
     while(opcao != "1" and opcao != "2"):
