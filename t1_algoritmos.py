@@ -94,18 +94,7 @@ def adiciona_tarefa(listaDeTarefas):
    
     #talvez fazer um outro while para conseguir dar um [ERRO] diferente
     title = input("Digite o título da tarefa: ")
-   
-    while not title.isalpha():
-        print("Precisa ser uma palavra.")
-        title = input("Digite o título da tarefa: ")
-
     desc = input("Digite a descrição da tarefa: ")
-
-    while not desc.isalpha():
-        print("Precisa ser uma frase.")
-        desc = input("Digite o título da tarefa: ")
-       
-    #FAZER mesma checagem para o tempo
     #feito usando a mesma função para checagem do id
     time = input("Digite o tempo limite da tarefa: ")
 
@@ -117,51 +106,36 @@ def adiciona_tarefa(listaDeTarefas):
     listaDeTarefas.append(tarefa)
     sucessoMensagem(f"Tarefa {tarefa.getTitle()} criada e adicionada com sucesso.")
 
-def prioridade(listaDeTarefas):
-    listaAtivas = [task for task in listaDeTarefas if task.getStatus()]        
-    listaConcluidas = [task for task in listaDeTarefas if task not in listaAtivas]
-    aux = listaDeTarefas[0]
-    for i in range(len(listaDeTarefas)):
-        for l in range(len(listaDeTarefas)):
-            if(listaDeTarefas[l].getTime() > aux.getTime()):
-                temp = aux
-                aux = listaDeTarefas[l]
-                listaDeTarefas[l] = temp
-    return listaAtivas + listaConcluidas
-
 def prioridade_lista(listaDeTarefas):
     listaAtiva = [tarefa for tarefa in listaDeTarefas if tarefa.getStatus()]
     listaAtivaSorted = sorted(listaAtiva, key= lambda tarefa : tarefa.getTime())
     return listaAtivaSorted
 
 def visualiza_tarefas(listaDeTarefas):
-   
-    #FAZER - detalhar a visualizacao de tarefas para separar individualmente elas e deixar bonitn (usar o __str__ na tarefa)
-    linhaDivisoria()
 
-    #checa o numero de tarefas que existem na lista
-    numeroTarefas = len(listaDeTarefas)
-   
-    #menuzinho das tarefas
-    print(f"Quantidade de tarefas: {numeroTarefas}")
-    print("Opçōes de visualização:")
-    print("\t1 - Todas")
-    print("\t2 - Ativas")
-    print("\t3 - Concluídas")
-    #adicionei a opcao simples que vai printar apenas o titulo e a situacao
-    print("\t4 - Simples")
-    #checa o input do usuario para o menu
-   
-    input_usuario = input()
-   
-    while int(input_usuario) > 4 or int(input_usuario) < 1 or not input_usuario.isnumeric():
-        print("Opção inválida")
-        input_usuario = input()
-
-
-    if aListaTaVazia == True:
-        print("Não há tarefas adicionadas.")
+    if aListaTaVazia(listaDeTarefas):
+        erroMensagem("Não há tarefas adicionadas.")
     else:
+        #checa o numero de tarefas que existem na lista
+        numeroTarefas = len(listaDeTarefas)
+    
+        #menuzinho das tarefas
+        print(f"Quantidade de tarefas: {numeroTarefas}")
+        print("Opçōes de visualização:")
+        print("\t1 - Todas")
+        print("\t2 - Ativas")
+        print("\t3 - Concluídas")
+        #adicionei a opcao simples que vai printar apenas o titulo e a situacao
+        print("\t4 - Simples")
+        #checa o input do usuario para o menu
+    
+        input_usuario = input()
+    
+        linhaDivisoria()
+        while int(input_usuario) > 4 or int(input_usuario) < 1 or not input_usuario.isnumeric():
+            print("Opção inválida")
+            input_usuario = input()
+
         #faz a checagem para cada opcao de print
         lista = []
         if input_usuario == "1":
@@ -185,111 +159,122 @@ def visualiza_tarefas(listaDeTarefas):
                 print(f"Tarefa: {task.getTitle()}, situação: {statusAtual}")
 
 def atualiza_tarefas(listaDeTarefas):
-    #FAZER - adicionar parte bonus (prioridade de tarefas)
-    linhaDivisoria()
-   
-    identificador = input("Identificador da tarefa: ")
-    #acha a posicao na lista da tarefa
-    posicao_id = localizaIndentificador(listaDeTarefas, identificador)
-   
-    #caso a posicao existir:
-    if(posicao_id != None):
 
-        #pergunta qual e atualiza a informacao
-        print("\nQual item deseja atualizar? ")
-        print("\t1 - Título")
-        print("\t2 - Descrição")
-        print("\t3 - Tempo")
-        #Acrescentei o título aqui
+    if aListaTaVazia(listaDeTarefas):
+        erroMensagem("Não há tarefas adicionadas.")
 
-        input_usuario = input()
-
-        while int(input_usuario) < 1 or int(input_usuario) > 3:
-                erroMensagem("Opção inválida")
-                input_usuario = input()
-        if input_usuario == "1":
-                    listaDeTarefas[posicao_id].title = input("Digite o novo título: ")
-        elif input_usuario == "2":    
-                    listaDeTarefas[posicao_id].desc = input("Digite a nova descrição: ")
-        elif input_usuario == "3":        
-                    listaDeTarefas[posicao_id].time = input("digite o novo tempo: ")
-           
-        sucessoMensagem("Tarefa atualizada!")
-    #caso ela nao existir
     else:
-        erroMensagem("Tarefa não encontrada")
-
-def conclui_tarefas(listaDeTarefas):
-    linhaDivisoria()
-   
-    identificador = input("Identificador da tarefa concluida: ")
-    #acha a posicao do identificador na lista
-    posicao_id =  localizaIndentificador(listaDeTarefas, identificador)
-    #mensagem de aviso para caso queira prosseguir
-    if posicao_id != None:
-        avisoMensagem(f"a tarefa {listaDeTarefas[posicao_id].getTitle()} será concluida!")
-    else:
-        erroMensagem("Tarefa não encontrada.")
-        return
-   
-    print("continuar?")
-    print("\t1 - sim")
-    print("\t2 - não")
-    opcao = input("")
-    while(opcao != "1" and opcao != "2"):
-        print("Opção inválida")
-        opcao = input("Continuar? ")
-
-    #caso prosseguir -> concluir tarefa
-    if opcao == "1":
+        linhaDivisoria()
+        identificador = input("Identificador da tarefa: ")
+        #acha a posicao na lista da tarefa
+        posicao_id = localizaIndentificador(listaDeTarefas, identificador)
+    
+        #caso a posicao existir:
         if(posicao_id != None):
-            listaDeTarefas[posicao_id].tarefaConcluida()
-            #FAZER - depois de atualizar o __str__ podemos usar aqui
-            sucessoMensagem(f"A tarefa {listaDeTarefas[posicao_id].id}, descricao: {listaDeTarefas[posicao_id].desc} foi concluída")
-        else:
-            erroMensagem("Tarefa não encontrada.")
-    else:
-        avisoMensagem("Alteração não efetuada")
-   
-def exclui_tarefas(listaDeTarefas):
-   
-    linhaDivisoria()
-    identificador = input("Identificador da tarefa(s): ")
-   
-    posicao_id =  localizaIndentificador(listaDeTarefas, identificador)
-    #mensagem aviso sobre exclusao de tarefa
-    avisoMensagem(f"A tarefa {listaDeTarefas[posicao_id].getTitle()} não poderá ser recuperada após a remoção")
-    print("Continuar?")
-    print("\t1 - sim")
-    print("\t2 - não")
-    opcao = input("")
-    while(opcao != "1" and opcao != "2"):
-        print("Opção inválida")
-        opcao = input("Continuar? ")
-   
-    #caso preosseguir -> excluir tarefa
-    if opcao == "1":
-        if(posicao_id != None):
-            listaDeTarefas.pop(posicao_id)
-            sucessoMensagem("Tarefa removida com sucesso")
+
+            #pergunta qual e atualiza a informacao
+            print("\nQual item deseja atualizar? ")
+            print("\t1 - Título")
+            print("\t2 - Descrição")
+            print("\t3 - Tempo")
+            #Acrescentei o título aqui
+
+            input_usuario = input()
+
+            while int(input_usuario) < 1 or int(input_usuario) > 3:
+                    erroMensagem("Opção inválida")
+                    input_usuario = input()
+            if input_usuario == "1":
+                        listaDeTarefas[posicao_id].title = input("Digite o novo título: ")
+            elif input_usuario == "2":    
+                        listaDeTarefas[posicao_id].desc = input("Digite a nova descrição: ")
+            elif input_usuario == "3":        
+                        listaDeTarefas[posicao_id].time = input("digite o novo tempo: ")
+            
+            sucessoMensagem("Tarefa atualizada!")
+        #caso ela nao existir
         else:
             erroMensagem("Tarefa não encontrada")
+
+def conclui_tarefas(listaDeTarefas):
+    if aListaTaVazia(listaDeTarefas):
+        erroMensagem("Não há tarefas adicionadas.")
     else:
-        avisoMensagem("Exclusão não efetuada")
+        linhaDivisoria()
+        identificador = input("Identificador da tarefa concluida: ")
+        #acha a posicao do identificador na lista
+        posicao_id =  localizaIndentificador(listaDeTarefas, identificador)
+        #mensagem de aviso para caso queira prosseguir
+        if posicao_id != None:
+            avisoMensagem(f"a tarefa {listaDeTarefas[posicao_id].getTitle()} será concluida!")
+        else:
+            erroMensagem("Tarefa não encontrada.")
+            return
+    
+        print("continuar?")
+        print("\t1 - sim")
+        print("\t2 - não")
+        opcao = input("")
+        while(opcao != "1" and opcao != "2"):
+            print("Opção inválida")
+            opcao = input("Continuar? ")
+
+        #caso prosseguir -> concluir tarefa
+        if opcao == "1":
+            if(posicao_id != None):
+                listaDeTarefas[posicao_id].tarefaConcluida()
+                #FAZER - depois de atualizar o __str__ podemos usar aqui
+                sucessoMensagem(f"A tarefa {listaDeTarefas[posicao_id].id}, descricao: {listaDeTarefas[posicao_id].desc} foi concluída")
+            else:
+                erroMensagem("Tarefa não encontrada.")
+        else:
+            avisoMensagem("Alteração não efetuada")
+   
+def exclui_tarefas(listaDeTarefas):
+
+    if aListaTaVazia(listaDeTarefas):
+        erroMensagem("Não há tarefas adicionadas.")
+    else:
+        linhaDivisoria()
+        identificador = input("Identificador da tarefa(s): ")
+    
+        posicao_id =  localizaIndentificador(listaDeTarefas, identificador)
+
+        if posicao_id == None:
+            erroMensagem("Tarefa não encontrada.")
+            return
+
+        #mensagem aviso sobre exclusao de tarefa
+        avisoMensagem(f"A tarefa {listaDeTarefas[posicao_id].getTitle()} não poderá ser recuperada após a remoção")
+        print("Continuar?")
+        print("\t1 - sim")
+        print("\t2 - não")
+        opcao = input("")
+        while(opcao != "1" and opcao != "2"):
+            print("Opção inválida")
+            opcao = input("Continuar? ")
+    
+        #caso preosseguir -> excluir tarefa
+        if opcao == "1":
+            if(posicao_id != None):
+                listaDeTarefas.pop(posicao_id)
+                sucessoMensagem("Tarefa removida com sucesso")
+            else:
+                erroMensagem("Tarefa não encontrada")
+        else:
+            avisoMensagem("Exclusão não efetuada")
    
 def menu_principal():
     listaDeTarefas = []
     while True:
         tituloMensagem("\n*** Sistema de Gerenciamento de Tarefas ***")
-        print("")
-        print("\tDigite a opção desejada:")
-        print("\t0 - Sair")
-        print("\t1 - Adicionar tarefa")
-        print("\t2 - Visualizar tarefas")
-        print("\t3 - Atualizar tarefas")
-        print("\t4 - Concluir tarefas")
-        print("\t5 - Excluir tarefas")
-       
+        print("\t[0] - Sair")
+        print("\t[1] - Adicionar tarefa")
+        print("\t[2] - Visualizar tarefas")
+        print("\t[3] - Atualizar tarefas")
+        print("\t[4] - Concluir tarefas")
+        print("\t[5] - Excluir tarefas")
+        
         opcao = input()
        
         if opcao == "0":
