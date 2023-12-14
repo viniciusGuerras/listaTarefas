@@ -1,19 +1,19 @@
 class Tarefa:
+    #construtor da classe
     def __init__(self, id, title, desc, time):
         self.id = id
         self.title = title
         self.desc = desc
         self.time = time
         self.status = True
-    """usar o __str__ pra fazer um template de como a tarefa vai ser printada,
-    dai na visualizacao nos podemos printar diretamente a tarefa,
-    ao invés de usar o print em cada elemento da tarefa (usar o __str__  para
-    printar cada elemento bonitinho)
-    """
-    #PRINTAR TAMBEM O STATUS
-    def __str__(self):
+        
+    #usando o str para  quando precisar printar a tarefa
 
+    def __str__(self):
+        
+        #trocar o true e false por ativa e concluida
         statusAtual = "Ativa" if  self.getStatus() else "Concluida"
+        
         return (
             '---------------------------------------' +
             '\nIdentificador da tarefa: ' +str(self.id)+
@@ -41,21 +41,12 @@ def linhaDivisoria():
     print("-=-=-=-=-=-=-=-=-=-=-=-=-=-")
    
 #funcao que checa se a lista esta vazia ou nao (para ser usada na visualizacao)
-
 def aListaTaVazia(listaDeTarefas):
     if len(listaDeTarefas) > 0:
         return False
     return True
 
-#Função para verificar se o input fornecido é um inteiro ou não
-def inteiro(inputUser):
-    try:
-        intValue = int(inputUser)
-        return True
-    except ValueError:
-        return False
-
-#colorizacao do texto pq sim
+#funcoes para colorizar o texto
 def tituloMensagem(mensagem):
     print(f"\033[95m{mensagem}\033[0m")
 
@@ -68,7 +59,7 @@ def avisoMensagem(mensagem):
 def sucessoMensagem(mensagem):
     print(f"\033[92m{mensagem}\033[0m ")
 
-#mudança no localizaIndentificador: agora ele retorna a posiçao do identificador na lista
+#funcao para retornar a posicao de uma tarefa na lista de tarefas
 def localizaIndentificador(listaDeTarefas, id):
     for posicao in range(len(listaDeTarefas)):
         if listaDeTarefas[posicao].id == id:
@@ -76,15 +67,14 @@ def localizaIndentificador(listaDeTarefas, id):
     return None
 
 def adiciona_tarefa(listaDeTarefas):
+    
     linhaDivisoria()
 
-    tituloMensagem("*****Nova-Tarefa*****")
+    tituloMensagem("*****Nova-Tarefa*****")    
 
-    #FAZER checar se o indetificador que vai ser criado é um inteiro (se for string mostrar erro)
-    #FEITO. Criei uma função para conferir
     id = input("Digite o identificador da tarefa: ")
 
-    while inteiro(id) == False:
+    while not id.isdigit():
         erroMensagem("O identificador precisa ser um número inteiro.")
         id = input("Digite um novo identificador: ")
 
@@ -92,23 +82,26 @@ def adiciona_tarefa(listaDeTarefas):
         erroMensagem("Uma tarefa com o mesmo identificador foi localizada.")
         id = input("Digite um novo identificador para a tarefa: ")
    
-    #talvez fazer um outro while para conseguir dar um [ERRO] diferente
-    title = input("Digite o título da tarefa: ")
-    desc = input("Digite a descrição da tarefa: ")
-    #feito usando a mesma função para checagem do id
+    title = input("Digite o título da tarefa: ").strip()
+    desc = input("Digite a descrição da tarefa: ").strip()
+
     time = input("Digite o tempo limite da tarefa: ")
 
-    while inteiro(time) == False:
+    while not time.isdigit():
         print("O tempo precisa ser um valor numérico.")
         time = input("Digite o tempo limite da tarefa: ")
 
+    #cria a nova tarefa e adiciona na lista0
     tarefa = Tarefa(id, title, desc, time)
     listaDeTarefas.append(tarefa)
     sucessoMensagem(f"Tarefa {tarefa.getTitle()} criada e adicionada com sucesso.")
 
+
 def prioridade_lista(listaDeTarefas):
+    
     listaAtiva = [tarefa for tarefa in listaDeTarefas if tarefa.getStatus()]
-    listaAtivaSorted = sorted(listaAtiva, key= lambda tarefa : tarefa.getTime())
+    #da um sort com base no tempo, utilizando uma lambda
+    listaAtivaSorted = sorted(listaAtiva, key=lambda tarefa : tarefa.getTime())
     return listaAtivaSorted
 
 def visualiza_tarefas(listaDeTarefas):
@@ -122,21 +115,21 @@ def visualiza_tarefas(listaDeTarefas):
         #menuzinho das tarefas
         print(f"Quantidade de tarefas: {numeroTarefas}")
         print("Opçōes de visualização:")
-        print("\t1 - Todas")
-        print("\t2 - Ativas")
-        print("\t3 - Concluídas")
+        print("\t[1] - Todas")
+        print("\t[2] - Ativas")
+        print("\t[3] - Concluídas")
         #adicionei a opcao simples que vai printar apenas o titulo e a situacao
-        print("\t4 - Simples")
-        #checa o input do usuario para o menu
-    
+        
+        print("\t[4] - Simples")
+
         input_usuario = input()
     
-        linhaDivisoria()
+        #checa se o input do usuario esta no intervalo certo
         while int(input_usuario) > 4 or int(input_usuario) < 1 or not input_usuario.isnumeric():
             print("Opção inválida")
             input_usuario = input()
 
-        #faz a checagem para cada opcao de print
+        #faz a checagem e printa para cada opcao
         lista = []
         if input_usuario == "1":
             lista = prioridade_lista(listaDeTarefas)
@@ -155,6 +148,7 @@ def visualiza_tarefas(listaDeTarefas):
                 if not task.getStatus():
                     print(task)
             elif input_usuario == "4":
+                linhaDivisoria()
                 statusAtual = "Ativa" if task.getStatus() else "Concluida"
                 print(f"Tarefa: {task.getTitle()}, situação: {statusAtual}")
 
@@ -164,23 +158,29 @@ def atualiza_tarefas(listaDeTarefas):
         erroMensagem("Não há tarefas adicionadas.")
 
     else:
+
         linhaDivisoria()
         identificador = input("Identificador da tarefa: ")
-        #acha a posicao na lista da tarefa
+        
+        #acha a posicao do id na lista da tarefa
         posicao_id = localizaIndentificador(listaDeTarefas, identificador)
     
         #caso a posicao existir:
         if(posicao_id != None):
 
-            #pergunta qual e atualiza a informacao
+            #pergunta qual campo atualizar
             print("\nQual item deseja atualizar? ")
             print("\t1 - Título")
             print("\t2 - Descrição")
             print("\t3 - Tempo")
-            #Acrescentei o título aqui
+
 
             input_usuario = input()
-
+            #checa se o input ta no intervalo correto
+            while not input_usuario.isdigit():
+                    erroMensagem("Precisa ser um número inteiro.")
+                    input_usuario = input()
+        
             while int(input_usuario) < 1 or int(input_usuario) > 3:
                     erroMensagem("Opção inválida")
                     input_usuario = input()
@@ -235,6 +235,7 @@ def exclui_tarefas(listaDeTarefas):
     if aListaTaVazia(listaDeTarefas):
         erroMensagem("Não há tarefas adicionadas.")
     else:
+        
         linhaDivisoria()
         identificador = input("Identificador da tarefa(s): ")
     
