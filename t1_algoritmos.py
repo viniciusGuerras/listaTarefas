@@ -39,6 +39,13 @@ def aListaTaVazia(listaDeTarefas):
         return False
     return True
 
+def jaConcluiuAlgo(listaDeTarefas):
+    for task in listaDeTarefas:
+        if not task.getStatus():
+             return True
+    return False
+
+
 #funcoes para colorizar o texto
 def tituloMensagem(mensagem):
     print(f"\033[95m{mensagem}\033[0m")
@@ -123,23 +130,37 @@ def visualiza_tarefas(listaDeTarefas):
         #faz a checagem e printa para cada opcao
         lista = []
         if input_usuario == "1":
+
+            #faz uma lista com as ativas organizadas e da print
             lista = prioridade_lista(listaDeTarefas)
             for task in lista:
                     print(task)
             for task in listaDeTarefas:
+                #faz uma lista das concluidas e da print
                 listaFinal = [task for task in listaDeTarefas if task not in lista]
             for tarefa in listaFinal:
                 print(tarefa)
+
         if input_usuario == "2":
+                
                 lista = prioridade_lista(listaDeTarefas)
                 for task in lista:
                     print(task)
-        for task in listaDeTarefas:
-            if input_usuario == "3":
-                if not task.getStatus():
-                    print(task)
-            elif input_usuario == "4":
+
+        if input_usuario == "3":
+
+            if jaConcluiuAlgo(listaDeTarefas):
+                for task in listaDeTarefas:
+                    if not task.getStatus():
+                        print(task)
+            else:
+                avisoMensagem("Nenhuma tarefa concluída.")
+
+        elif input_usuario == "4":
+
+            for task in listaDeTarefas:
                 linhaDivisoria()
+                #transforma o status de true e false para ativo e concluido.
                 statusAtual = "Ativa" if task.getStatus() else "Concluida"
                 print(f"Tarefa: {task.getTitle()}, situação: {statusAtual}")
 
