@@ -6,33 +6,26 @@ class Tarefa:
         self.desc = desc
         self.time = time
         self.status = True
-        
+         
     #usando o str para  quando precisar printar a tarefa
-
     def __str__(self):
-        
         #trocar o true e false por ativa e concluida
         statusAtual = "Ativa" if  self.getStatus() else "Concluida"
-        
         return (
-            '---------------------------------------' +
+            '---------------------------------------\n' +
+            str(self.getTitle()).upper() + 
             '\nIdentificador da tarefa: ' +str(self.id)+
-            '\nTítulo da tarefa: ' +str(self.getTitle())+
             '\nDescrição: ' +str(self.desc)+
             '\nTempo: ' +str(self.time)+ ' horas'
             '\nSituação: ' + statusAtual
         )
-
     def tarefaConcluida(self):
         self.status = False
         self.time = 0
-
     def getTitle(self):
         return self.title
-
     def getStatus(self):
         return self.status
-
     def getTime(self):
         return int(self.time)
 
@@ -68,8 +61,6 @@ def localizaIndentificador(listaDeTarefas, id):
 
 def adiciona_tarefa(listaDeTarefas):
     
-    linhaDivisoria()
-
     tituloMensagem("*****Nova-Tarefa*****")    
 
     id = input("Digite o identificador da tarefa: ")
@@ -82,13 +73,13 @@ def adiciona_tarefa(listaDeTarefas):
         erroMensagem("Uma tarefa com o mesmo identificador foi localizada.")
         id = input("Digite um novo identificador para a tarefa: ")
    
-    title = input("Digite o título da tarefa: ").strip()
+    title = input("Digite o título da tarefa: ").strip( )
     desc = input("Digite a descrição da tarefa: ").strip()
 
     time = input("Digite o tempo limite da tarefa: ")
 
     while not time.isdigit():
-        print("O tempo precisa ser um valor numérico.")
+        erroMensagem("O tempo precisa ser um valor numérico.")
         time = input("Digite o tempo limite da tarefa: ")
 
     #cria a nova tarefa e adiciona na lista0
@@ -139,11 +130,11 @@ def visualiza_tarefas(listaDeTarefas):
                 listaFinal = [task for task in listaDeTarefas if task not in lista]
             for tarefa in listaFinal:
                 print(tarefa)
-        for task in listaDeTarefas:
-            if input_usuario == "2":
+        if input_usuario == "2":
                 lista = prioridade_lista(listaDeTarefas)
                 for task in lista:
                     print(task)
+        for task in listaDeTarefas:
             if input_usuario == "3":
                 if not task.getStatus():
                     print(task)
@@ -158,7 +149,6 @@ def atualiza_tarefas(listaDeTarefas):
         erroMensagem("Não há tarefas adicionadas.")
 
     else:
-
         linhaDivisoria()
         identificador = input("Identificador da tarefa: ")
         
@@ -170,10 +160,9 @@ def atualiza_tarefas(listaDeTarefas):
 
             #pergunta qual campo atualizar
             print("\nQual item deseja atualizar? ")
-            print("\t1 - Título")
-            print("\t2 - Descrição")
-            print("\t3 - Tempo")
-
+            print("\t[1] - Título")
+            print("\t[2] - Descrição")
+            print("\t[3] - Tempo")
 
             input_usuario = input()
             #checa se o input ta no intervalo correto
@@ -182,7 +171,7 @@ def atualiza_tarefas(listaDeTarefas):
                     input_usuario = input()
         
             while int(input_usuario) < 1 or int(input_usuario) > 3:
-                    erroMensagem("Opção inválida")
+                    erroMensagem("Opção inválida.")
                     input_usuario = input()
             if input_usuario == "1":
                         listaDeTarefas[posicao_id].title = input("Digite o novo título: ")
@@ -194,16 +183,19 @@ def atualiza_tarefas(listaDeTarefas):
             sucessoMensagem("Tarefa atualizada!")
         #caso ela nao existir
         else:
-            erroMensagem("Tarefa não encontrada")
+            erroMensagem("Tarefa não encontrada.")
 
 def conclui_tarefas(listaDeTarefas):
     if aListaTaVazia(listaDeTarefas):
         erroMensagem("Não há tarefas adicionadas.")
     else:
+
         linhaDivisoria()
         identificador = input("Identificador da tarefa concluida: ")
+
         #acha a posicao do identificador na lista
         posicao_id =  localizaIndentificador(listaDeTarefas, identificador)
+
         #mensagem de aviso para caso queira prosseguir
         if posicao_id != None:
             avisoMensagem(f"a tarefa {listaDeTarefas[posicao_id].getTitle()} será concluida!")
@@ -212,8 +204,8 @@ def conclui_tarefas(listaDeTarefas):
             return
     
         print("continuar?")
-        print("\t1 - sim")
-        print("\t2 - não")
+        print("\t[1] - sim")
+        print("\t[2] - não")
         opcao = input("")
         while(opcao != "1" and opcao != "2"):
             print("Opção inválida")
@@ -228,14 +220,14 @@ def conclui_tarefas(listaDeTarefas):
             else:
                 erroMensagem("Tarefa não encontrada.")
         else:
-            avisoMensagem("Alteração não efetuada")
+            avisoMensagem("Alteração não efetuada.")
    
 def exclui_tarefas(listaDeTarefas):
 
     if aListaTaVazia(listaDeTarefas):
         erroMensagem("Não há tarefas adicionadas.")
     else:
-        
+
         linhaDivisoria()
         identificador = input("Identificador da tarefa(s): ")
     
@@ -248,14 +240,14 @@ def exclui_tarefas(listaDeTarefas):
         #mensagem aviso sobre exclusao de tarefa
         avisoMensagem(f"A tarefa {listaDeTarefas[posicao_id].getTitle()} não poderá ser recuperada após a remoção")
         print("Continuar?")
-        print("\t1 - sim")
-        print("\t2 - não")
+        print("\t[1] - sim")
+        print("\t[2] - não")
         opcao = input("")
         while(opcao != "1" and opcao != "2"):
             print("Opção inválida")
             opcao = input("Continuar? ")
     
-        #caso preosseguir -> excluir tarefa
+        #caso prosseguir -> excluir tarefa
         if opcao == "1":
             if(posicao_id != None):
                 listaDeTarefas.pop(posicao_id)
